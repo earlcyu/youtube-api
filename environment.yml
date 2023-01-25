@@ -1,0 +1,8 @@
+name: google-api
+channels:
+  - defaults
+dependencies:
+  - python=3
+  - google-api-python-client
+  - pandas
+prefix: C:\Users\yuel\Anaconda3\envs\google-api

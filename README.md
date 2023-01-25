@@ -12,6 +12,7 @@ I started learning object-oriented programming awhile back and needed to apply w
 
 ```
 .gitignore          - list of files/types to exclude in git commits
+environment.yml     - lists dependencies
 config.py           - contains API key and dictionary of channels
 main.py             - imports and applies the `Channel` class
 README.md           - documentation
