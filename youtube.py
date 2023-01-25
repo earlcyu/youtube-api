@@ -1,12 +1,54 @@
 import re
 import pandas as pd
 from googleapiclient.discovery import build
-from config import api_key, channels
+from config import api_key
 
 
 
 class Channel():
-    def __init__(self, channel_id) -> None:
+    '''
+    A class that represents a YouTube channel
+
+    Attributes
+    ----------
+    channel_id : str
+        a unique string identifier for a channel
+    
+    channel_stats : pd.DataFrame
+        a single-line dataframe with the channel's information 
+        and high-level statistics as its columns
+    
+    uploads_id : str
+        a unique string identifier for the channel's uploads ID
+    
+    video_ids : list
+        a list of video IDs the channel has published
+    
+    video_stats : pd.DataFrame
+        a dataframe of videos and their details the channel has published
+
+    Methods
+    -------
+    _make_snake_case(name: str)
+        Converts a string in camelCase to snake_case
+    
+    _clean_columns(columns: list)
+        Converts a list of snakeCase strings into snake_case
+    
+    get_channel_stats()
+        Returns a single-line dataframe with the channel's information 
+        and high-level statistics as its columns
+    
+    get_video_ids()
+        Returns a list of the channel's video IDs, which are used as input 
+        for `get_video_stats()`
+    
+    get_video_stats()
+        Returns a dataframe of videos and their details the channel 
+        has published
+    '''
+    
+    def __init__(self, channel_id: str) -> None:
         self.channel_id = channel_id 
         self.youtube = build('youtube', 'v3', developerKey=api_key)
         self.pattern = re.compile(r'(?<!^)(?=[A-Z])')
@@ -23,7 +65,8 @@ class Channel():
         return list(map(self._make_snake_case, columns))
 
     def get_channel_stats(self):
-        '''Returns a single-line dataframe with the channel's information and high-level statistics as its columns'''
+        '''Returns a single-line dataframe with the channel's information 
+        and high-level statistics as its columns'''
         request = self.youtube.channels().list(
             part='snippet,contentDetails,statistics',
             id=self.channel_id
@@ -34,7 +77,8 @@ class Channel():
         self.uploads_id = self.channel_stats.loc[0,'content_details_related_playlists_uploads']
 
     def get_video_ids(self):
-        '''Returns a list of the channel's video IDs, which are used as input for `function_name`'''
+        '''Returns a list of the channel's video IDs, which are used as input 
+        for `get_video_stats()`'''
         self.video_ids = []
         
         request = self.youtube.playlistItems().list(
@@ -61,7 +105,8 @@ class Channel():
             next_page_token = response.get('nextPageToken')
 
     def get_video_stats(self):
-        '''Returns a dataframe of videos and their details the channel has published'''
+        '''Returns a dataframe of videos and their details the channel 
+        has published'''
         self.video_stats = pd.DataFrame()
         
         for video_id_index in range(0, len(self.video_ids), 50):
@@ -70,6 +115,8 @@ class Channel():
                 id=','.join(self.video_ids[video_id_index:video_id_index+50])
             )
             response = request.execute()
-            self.video_stats = pd.concat([self.video_stats, pd.json_normalize(response['items'][0])])
+            self.video_stats = pd.concat(
+                [self.video_stats, pd.json_normalize(response['items'][0])]
+            )
         
         self.video_stats.columns = self._clean_columns(self.video_stats.columns)
