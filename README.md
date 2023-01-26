@@ -2,6 +2,8 @@
 
 This project aims to create a `Channel` class using object-oriented programming principles, to easily obtain channel and video statistics data of a given YouTube channel.
 
+Check out my Medium article [here]() where I go through my process step by step.
+
 ---
 
 ## Context
@@ -12,8 +14,6 @@ I started learning object-oriented programming awhile back and needed to apply w
 
 ```
 .gitignore          - list of files/types to exclude in git commits
-environment.yml     - lists dependencies
-config.py           - contains API key and dictionary of channels
 main.py             - imports and applies the `Channel` class
 README.md           - documentation
 youtube.py          - contains the logic for the `Channel` class
