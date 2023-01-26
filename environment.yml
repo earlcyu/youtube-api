@@ -5,4 +5,6 @@ dependencies:
   - python=3
   - google-api-python-client
   - pandas
+variables:
+  YOUTUBE_API_KEY: AIzaSyA_BQkX-_rscKye3gIgRWANtzEpgZC2ur8
 prefix: C:\Users\yuel\Anaconda3\envs\google-api
