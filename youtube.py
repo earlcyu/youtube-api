@@ -1,7 +1,7 @@
+import os
 import re
 import pandas as pd
 from googleapiclient.discovery import build
-from config import api_key
 
 
 
@@ -50,7 +50,11 @@ class Channel():
     
     def __init__(self, channel_id: str) -> None:
         self.channel_id = channel_id 
-        self.youtube = build('youtube', 'v3', developerKey=api_key)
+        self.youtube = build(
+            'youtube', 
+            'v3', 
+            developerKey=os.environ['YOUTUBE_API_KEY']
+        )
         self.pattern = re.compile(r'(?<!^)(?=[A-Z])')
         self.get_channel_stats()
         self.get_video_ids()
