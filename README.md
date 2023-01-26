@@ -2,7 +2,7 @@
 
 This project aims to create a `Channel` class using object-oriented programming principles, to easily obtain channel and video statistics data of a given YouTube channel.
 
-Check out my Medium article [here]() where I go through my process step by step.
+Check out my Medium article [here](https://medium.com/@earlc.yu/how-to-apply-oop-principles-in-data-engineering-creating-a-class-object-with-the-youtube-api-ceaffabb07bc) where I go through my process step by step.
 
 ---
 
