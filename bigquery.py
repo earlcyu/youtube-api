@@ -15,13 +15,15 @@ class BigQuery:
 
     Methods
     -------
+    connect()
+        Connects to the BigQuery destination
+    disconnect()
+        Disconnects from the BigQuery destination
     load_data(load_type: str, job_schema: str, data: pd.DataFrame, target_dataset: str, target_table: str)
         Loads a given dataframe into a table; overwrites existing data
     '''
 
     def __init__(self, service_account_file: str) -> None:
-        # Construct a BigQuery client object.
-        self.client = bigquery.Client()
         self.service_account_file = service_account_file
 
     def connect(self):
@@ -30,17 +32,12 @@ class BigQuery:
             self.service_account_file
         )
         
-    def disconnect(self) -> bool:
+    def disconnect(self):
         '''Disconnects from the BigQuery destination'''
         self.connection = None
 
-    def load_data(
-        self, 
-        load_type: str,
-        job_schema: str, 
-        data: pd.DataFrame, 
-        target_dataset: str, 
-        target_table: str
+    def load_data(self, load_type: str, job_schema: str, data: pd.DataFrame, 
+        target_dataset: str, target_table: str
     ):
         '''
         Loads a given dataframe into a table; overwrites existing data
@@ -60,16 +57,16 @@ class BigQuery:
             the destination table of where to load the given dataframe
         '''
         
-        # Define load parameter
-        if load_type == 'overwrite':
-            load_parameter = 'WRITE_TRUNCATE'
-        elif load_type == 'append':
-            load_parameter = 'WRITE_APPEND'
-        
+        # Create a client instance
+        client = bigquery.Client(
+            project=self.connection.project_id, 
+            credentials=self.connection
+        )
+
         # Specify the job configuration
         job_config = bigquery.LoadJobConfig(
             autodetect=True, # Autodetect the schema
-            write_disposition=load_parameter
+            write_disposition=load_type
         )
 
         # Set the provided schema if it has been provided
@@ -84,7 +81,7 @@ class BigQuery:
         table_id = f'{target_dataset}.{target_table}'
 
         # Make an API request.
-        job = self.client.load_table_from_dataframe(
+        job = client.load_table_from_dataframe(
             dataframe=data, 
             destination=table_id, 
             job_config=job_config
