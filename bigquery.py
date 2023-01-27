@@ -28,12 +28,14 @@ class BigQuery:
 
     def connect(self):
         '''Connects to the BigQuery destination'''
+        
         self.connection = service_account.Credentials.from_service_account_file(
             self.service_account_file
         )
         
     def disconnect(self):
         '''Disconnects from the BigQuery destination'''
+        
         self.connection = None
 
     def load_data(self, load_type: str, job_schema: str, data: pd.DataFrame, 
@@ -65,11 +67,11 @@ class BigQuery:
 
         # Specify the job configuration
         job_config = bigquery.LoadJobConfig(
-            autodetect=True, # Autodetect the schema
+            autodetect=True, 
             write_disposition=load_type
         )
 
-        # Set the provided schema if it has been provided
+        # Set the provided schema if one has been provided
         if job_schema:
             columns = [column.split(':') for column in job_schema.split(',')]
             schema = [bigquery.SchemaField(col_name, dtype) for col_name, dtype in columns]
