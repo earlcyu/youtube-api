@@ -128,7 +128,7 @@ class Channel:
             )
             response = request.execute()
             self.video_stats = pd.concat(
-                [self.video_stats, pd.json_normalize(response['items'][0])]
+                [self.video_stats, pd.json_normalize(response['items'])]
             )
         
         self.video_stats.columns = self._clean_columns(self.video_stats.columns)
