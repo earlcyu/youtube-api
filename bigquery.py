@@ -11,7 +11,7 @@ class BigQuery:
     Attributes
     ----------
     service_account_file : str
-        the file path of the service account credentials
+        The file path of the service account credentials
 
     Methods
     -------
@@ -19,7 +19,9 @@ class BigQuery:
         Connects to the BigQuery destination
     disconnect()
         Disconnects from the BigQuery destination
-    load_data(load_type: str, job_schema: str, data: pd.DataFrame, target_dataset: str, target_table: str)
+    load_data(load_type: str, job_schema: str, data: pd.DataFrame, 
+        target_dataset: str, target_table: str
+    )
         Loads a given dataframe into a table; overwrites existing data
     '''
 
@@ -28,14 +30,12 @@ class BigQuery:
 
     def connect(self):
         '''Connects to the BigQuery destination'''
-        
         self.connection = service_account.Credentials.from_service_account_file(
             self.service_account_file
         )
         
     def disconnect(self):
         '''Disconnects from the BigQuery destination'''
-        
         self.connection = None
 
     def load_data(self, load_type: str, job_schema: str, data: pd.DataFrame, 
@@ -49,14 +49,14 @@ class BigQuery:
         load_type : str
             WRITE_TRUNCATE or WRITE_APPEND
         job_schema : str
-            a string of columns and their data types 
+            A string of columns and their data types 
             e.g., first_name:STRING,birthday:DATE,salary:FLOAT
         data : pd.DataFrame
-            the dataframe to load into BigQuery
+            The dataframe to load into BigQuery
         target_dataset : str
-            the destination dataset of where to load the given dataframe
+            The destination dataset of where to load the given dataframe
         target_table : str
-            the destination table of where to load the given dataframe
+            The destination table of where to load the given dataframe
         '''
         
         # Create a client instance

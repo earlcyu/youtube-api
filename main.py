@@ -37,8 +37,20 @@ def main():
     bigquery.connect() 
 
     # Load the dataframes into the destination tables 
-    bigquery.load_data('WRITE_TRUNCATE', None, channel_stats, 'youtube', 'channels')
-    bigquery.load_data('WRITE_TRUNCATE', None, video_stats, 'youtube', 'videos')
+    bigquery.load_data(
+        load_type='WRITE_TRUNCATE', 
+        job_schema=None, 
+        data=channel_stats, 
+        target_dataset='youtube', 
+        target_table='channels'
+    )
+    bigquery.load_data(
+        load_type='WRITE_TRUNCATE', 
+        job_schema=None, 
+        data=video_stats, 
+        target_dataset='youtube', 
+        target_table='videos'
+    )
 
     # Disconnect 
     bigquery.disconnect()

@@ -5,35 +5,35 @@ from googleapiclient.discovery import build
 
 
 
-class Channel():
+class Channel:
     '''
     A class that represents a YouTube channel
 
     Attributes
     ----------
     channel_id : str
-        a unique string identifier for a channel
+        A unique string identifier for a channel
     
     channel_stats : pd.DataFrame
-        a single-line dataframe with the channel's information 
+        A single-line dataframe with the channel's information 
         and high-level statistics as its columns
     
     uploads_id : str
-        a unique string identifier for the channel's uploads ID
+        A unique string identifier for the channel's uploads ID
     
     video_ids : list
-        a list of video IDs the channel has published
+        A list of video IDs the channel has published
     
     video_stats : pd.DataFrame
-        a dataframe of videos and their details the channel has published
+        A dataframe of videos and their details the channel has published
 
     Methods
     -------
-    _make_snake_case(name: str)
-        Converts a string in camelCase to snake_case
+    _clean_string(self, column_name:str):
+        Removes prefixes and converts the string to snake_case
     
     _clean_columns(columns: list)
-        Converts a list of snakeCase strings into snake_case
+        Applies the _clean_string() function to a given list of strings
     
     get_channel_stats()
         Returns a single-line dataframe with the channel's information 
@@ -55,38 +55,42 @@ class Channel():
             'v3', 
             developerKey=os.environ['YOUTUBE_API_KEY']
         )
+        # List of prefixes to remove in cleaning column names
+        self.prefixes = ['snippet.', 'contentDetails.', 'statistics.']
+        # RegEx pattern to help convert camelCase to snake_case
         self.pattern = re.compile(r'(?<!^)(?=[A-Z])')
+        # Instantiate the following methods upon creating a class
         self.get_channel_stats()
         self.get_video_ids()
         self.get_video_stats()
+
+    def _clean_string(self, column_name:str):
+        '''Removes prefixes and converts the string to snake_case'''
+        for prefix in self.prefixes:
+            column_name = column_name.replace(prefix, '') 
+        return self.pattern.sub('_', column_name).lower().replace('.', '_') 
     
-    def _make_snake_case(self, name:str):
-        '''Converts a string in camelCase to snake_case'''
-        
-        return self.pattern.sub('_', name).lower().replace('.', '_')
-    
-    def _clean_columns(self, columns:list):
-        '''Converts a list of snakeCase strings into snake_case'''
-        
-        return list(map(self._make_snake_case, columns))
+    def _clean_columns(self, column_names:list):
+        '''Applies the _clean_string() function to a given list of strings'''
+        return list(map(self._clean_string, column_names))
 
     def get_channel_stats(self):
         '''Returns a single-line dataframe with the channel's information 
         and high-level statistics as its columns'''
-        
         request = self.youtube.channels().list(
             part='snippet,contentDetails,statistics',
             id=self.channel_id
         )
         response = request.execute()
         self.channel_stats = pd.json_normalize(response['items'][0])
-        self.channel_stats.columns = self._clean_columns(self.channel_stats.columns)
-        self.uploads_id = self.channel_stats.loc[0,'content_details_related_playlists_uploads']
+        self.channel_stats.columns = self._clean_columns(
+            self.channel_stats.columns
+        )
+        self.uploads_id = self.channel_stats.loc[0,'related_playlists_uploads']
 
     def get_video_ids(self):
         '''Returns a list of the channel's video IDs, which are used as input 
         for `get_video_stats()`'''
-        
         self.video_ids = []
         
         request = self.youtube.playlistItems().list(
@@ -115,7 +119,6 @@ class Channel():
     def get_video_stats(self):
         '''Returns a dataframe of videos and their details the channel 
         has published'''
-        
         self.video_stats = pd.DataFrame()
         
         for video_id_index in range(0, len(self.video_ids), 50):
