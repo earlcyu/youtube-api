@@ -1,11 +1,11 @@
-# End-to-End Data Engineering Project with the YouTube API
+# End-to-End Data Engineering and Visualization with the YouTube API
 
-This is an end-to-end data engineering project utilizing the YouTube API. Specifically, this project aims to:
+This is an end-to-end data engineering project and visualization utilizing the YouTube API. Specifically, this project aims to:
 1. Create a `Channel` class using object-oriented programming principles to easily obtain channel and video statistics data of a given YouTube channel
 2. Load the data from (1) into a BigQuery table using the BigQuery API 
-3. Visualize the data from (2) using Data Studio 
+3. Visualize the data from (2) using Looker Studio 
 
-Check out my Medium article series where I go through each phase of the project step by step: [Part 1](https://medium.com/@earlc.yu/how-to-apply-oop-principles-in-data-engineering-creating-a-class-object-with-the-youtube-api-ceaffabb07bc).
+Check out my Medium article series where I go through each phase of the project step by step: [Part 1](https://medium.com/@earlc.yu/how-to-apply-oop-principles-in-data-engineering-creating-a-class-object-with-the-youtube-api-ceaffabb07bc), [Part 2](https://medium.com/@earlc.yu/how-to-load-a-dataframe-into-bigquery-using-python-and-the-bigquery-api-9da0fdda1dfb).
 
 ---
 
